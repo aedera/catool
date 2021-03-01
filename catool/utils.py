@@ -6,6 +6,7 @@ import numpy as np
 import numba as nb
 
 from . import onto
+from . import main
 
 @nb.njit(parallel=True)
 def propagate_terms(m, branches):
@@ -36,13 +37,48 @@ def create_ancestors_cache(go, namespace, fout):
     np.savez_compressed(fout, a=ancestors)
 
 def create_cache_files(log=False):
-    OBO_FILE = '{}/go.obo'.format(os.path.dirname(os.path.realpath(__file__)))
-    go = onto.Ontology(OBO_FILE, with_rels=True, include_alt_ids=False)
+    go = main.get_go()
+
     for namespace in onto.NAMESPACES.values():
         fout = os.path.dirname(os.path.realpath(__file__)) + '/' + namespace + '.npz'
-        create_ancestors_cache(go, namespace, fout)
-        if log:
-            print(namespace + '.npz was saved.')
+
+        if not os.path.exists(fout):
+            create_ancestors_cache(go, namespace, fout)
+            if log:
+                print(namespace + '.npz was created.')
+
+
+def predictions_into_a_matrix(pred, benchmark_prots, namespace):
+    """Create matrix (n_prots, n_term) whose values are the predicted
+probabilities."""
+    go = main.get_go()
+    # pred = { k:pred[k] for k in pred.keys() if k in common_prots  }
+    # n_predicted_proteins_in_benchmark = len(pred.keys())
+
+    mat = np.zeros((len(benchmark_prots), go.counts[namespace]), dtype=np.float64)
+    # fill matrix
+    n_pred_proteins_in_benchmark = 0.
+    for prot_id, protein in enumerate(benchmark_prots):
+        if protein in pred:
+            n_pred_proteins_in_benchmark += 1.
+            # loop over pairs (predicted terms, probability)
+            for term, prob in pred[protein]:
+                term = go.term2index[namespace][term]
+                mat[prot_id, term] = float(prob)
+
+    return n_pred_proteins_in_benchmark, mat
+
+
+def results2string(results, mode, namespace):
+    for i in range(results.shape[0]):
+        print("{}\t{}\t{:.2f}\t{:.4f}\t{:.4f}\t{:.4f}".format(
+            mode,
+            namespace,
+            results[i,0],
+            results[i,1],
+            results[i,2],
+            results[i,3]))
+
 
 if __name__ == '__main__':
     create_caches(log=True)

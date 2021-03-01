@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "catool"
+version = "0.1.0"
+description = ""
+authors = ["Space dust <sd@solarsys.earth>"]
+
+[tool.poetry.dependencies]
+python = "^3.7.4"
+numba = "^0.52.0"
+numpy = "^1.20.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

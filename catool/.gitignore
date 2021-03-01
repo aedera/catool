@@ -1,0 +1,3 @@
+*.npz
+go.obo
+__pycache__

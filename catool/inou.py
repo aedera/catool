@@ -1,3 +1,4 @@
+import gzip
 import numpy as np
 
 def read_groundtruth(fin, go, namespace, prot_ids):
@@ -7,7 +8,7 @@ def read_groundtruth(fin, go, namespace, prot_ids):
     A boolean matrix is returned with dimensionality: (n_proteins, n_terms)
     """
     pred = {}
-    with open(fin) as f:
+    with gzip.open(fin, 'rt', encoding='utf-8') as f:
         for a in f:
             prot_id, term = a.strip().split('\t')
             term_namespace = go.ont[term]['namespace']
@@ -44,8 +45,8 @@ def read_groundtruth(fin, go, namespace, prot_ids):
     return n_benchmarks, proteins, mat
 
 def read_predictions(fin, go, proteins, namespace, prot_ids):
-    """
-    Predictions are assumed to be in a three-columns file
+    """Predictions are reading from a tab-separated file with three columns:
+    prot_id, GO_term, predicted_confidence.
     """
     pred = {}
     with open(fin) as f:
@@ -84,13 +85,36 @@ def read_predictions(fin, go, proteins, namespace, prot_ids):
 
     return n_pred_proteins_in_benchmark, mat
 
+def cast_predictions_into_dict(fin, go, namespace):
+    """
+    """
+    pred = {}
+    with open(fin) as f:
+        for a in f:
+            protein, term, confidence = a.strip().split('\t')
+
+            # exclude terms that are not found in the GO
+            try:
+                term_namespace = go.ont[term]['namespace']
+            except KeyError:
+                term_namespace = None
+
+            if term_namespace != namespace:
+                continue
+
+            if protein not in pred:
+                pred[protein] = []
+            pred[protein].append((term, confidence))
+
+    return pred
+
 
 def _get_prot_ids(fin, go, namespace):
     """
     Obtain the prot_id from
     """
     prot_ids = set({})
-    with open(fin) as f:
+    with gzip.open(fin, 'rt', encoding='utf-8') as f:
         for a in f:
             raw = a.strip().split('\t')
             prot_id = raw[0]
@@ -108,11 +132,11 @@ def _get_prot_ids(fin, go, namespace):
 
     return prot_ids
 
-def get_common_prots(true_fin, pred_fin, go, namespace):
+def get_common_prots(true_fin, pred, go, namespace):
     # protein ids in the so-called benchmarks
     true_prot_ids = _get_prot_ids(true_fin, go, namespace)
     # protein ids in predictions
-    pred_prot_ids = _get_prot_ids(pred_fin, go, namespace)
+    pred_prot_ids = set(pred.keys())
     common_prot_ids = set.intersection(true_prot_ids, pred_prot_ids)
 
     return common_prot_ids

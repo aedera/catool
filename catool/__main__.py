@@ -3,16 +3,18 @@ import sys
 import os
 
 from catool import main
+from catool import inou
 from catool import utils
 
 if __name__ == '__main__':
-    opname = sys.argv[1]
+    pred_fin = sys.argv[1] # predictions
+    mode = sys.argv[2] # full or partial
+    namespace = sys.argv[3]
 
-    if opname == 'run':
-        true_fin = sys.argv[2]
-        pred_fin = sys.argv[3] # predictions
-        namespace = sys.argv[4]
+    go = main.get_go()
+    # read preditions from file
+    pred = inou.cast_predictions_into_dict(pred_fin, go, namespace)
 
-        main.run(true_fin, pred_fin, namespace)
-    else:
-        utils.create_cache_files(True)
+    #print(main.f1max_score(pred, mode, namespace))
+    results = main.run(pred, mode, namespace)
+    utils.results2string(results, mode, namespace)
