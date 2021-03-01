@@ -9,7 +9,9 @@ import numba as nb
 from . import onto
 from . import inou
 from . import utils
+from .conversion import mapper
 from .metrics import precision_recall_curve
+
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 # obo file used for calculations
@@ -60,6 +62,9 @@ groundtruths.
 
     """
     go = get_go()
+
+    # convert UniProt accessions into CAFA ids
+    pred = mapper.map(pred)
 
     # obtained protein identifieres that appear in the benchmarks
     common_prots = inou.get_common_prots(TRUE_FIN, pred, go, namespace)
