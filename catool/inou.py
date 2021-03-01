@@ -2,7 +2,7 @@ import gzip
 
 import numpy as np
 
-import main
+from . import main
 
 def read_groundtruth(fin, go, namespace, prot_ids):
     """

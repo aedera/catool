@@ -2,9 +2,9 @@
 import sys
 import os
 
-from catool import main
-from catool import inou
-from catool import utils
+from . import main
+from . import inou
+from . import utils
 
 if __name__ == '__main__':
     pred_fin = sys.argv[1] # predictions

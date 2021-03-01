@@ -5,8 +5,8 @@ import gzip
 import numpy as np
 import numba as nb
 
-import onto
-import main
+from . import onto
+from . import main
 
 @nb.njit(parallel=True)
 def propagate_terms(m, branches):

@@ -6,10 +6,10 @@ import numpy as np
 import numba as nb
 
 #from precRec import benchmark
-import onto
-import inou
-import utils
-from metrics import precision_recall_curve
+from . import onto
+from . import inou
+from . import utils
+from .metrics import precision_recall_curve
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 # obo file used for calculations
