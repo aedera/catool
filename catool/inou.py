@@ -1,5 +1,8 @@
 import gzip
+
 import numpy as np
+
+import main
 
 def read_groundtruth(fin, go, namespace, prot_ids):
     """
@@ -85,11 +88,12 @@ def read_predictions(fin, go, proteins, namespace, prot_ids):
 
     return n_pred_proteins_in_benchmark, mat
 
-def cast_predictions_into_dict(fin, go, namespace):
+def cast_predictions_into_dict(fin, namespace):
     """
     """
+    go = main.get_go()
     pred = {}
-    with open(fin) as f:
+    with gzip.open(fin, 'rt', encoding='utf-8') as f:
         for a in f:
             protein, term, confidence = a.strip().split('\t')
 
@@ -104,7 +108,7 @@ def cast_predictions_into_dict(fin, go, namespace):
 
             if protein not in pred:
                 pred[protein] = []
-            pred[protein].append((term, confidence))
+            pred[protein].append((term, float(confidence)))
 
     return pred
 

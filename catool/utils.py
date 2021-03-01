@@ -5,8 +5,8 @@ import gzip
 import numpy as np
 import numba as nb
 
-from . import onto
-from . import main
+import onto
+import main
 
 @nb.njit(parallel=True)
 def propagate_terms(m, branches):
@@ -64,7 +64,7 @@ probabilities."""
             # loop over pairs (predicted terms, probability)
             for term, prob in pred[protein]:
                 term = go.term2index[namespace][term]
-                mat[prot_id, term] = float(prob)
+                mat[prot_id, term] = prob
 
     return n_pred_proteins_in_benchmark, mat
 
