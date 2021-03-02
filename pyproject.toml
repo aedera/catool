@@ -2,7 +2,7 @@
 name = "catool"
 version = "0.1.0"
 description = ""
-authors = ["Space dust <sd@solarsys.earth>"]
+authors = ["Alejandro A. Edera <aedera@sinc.unl.edu.ar>"]
 
 [tool.poetry.dependencies]
 python = "^3.7.4"
