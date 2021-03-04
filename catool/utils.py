@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import gzip
+import warnings
 
 import numpy as np
 import numba as nb
@@ -64,6 +65,7 @@ probabilities."""
             # loop over pairs (predicted terms, probability)
             for term, prob in pred[protein]:
                 if term not in go.ont.keys(): # discard terms not present in go
+                    warnings.warn("Predicted term {} is missing in the go.".format(term))
                     continue
                 term = go.term2index[namespace][term]
                 mat[prot_id, term] = prob
