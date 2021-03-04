@@ -63,6 +63,8 @@ probabilities."""
             n_pred_proteins_in_benchmark += 1.
             # loop over pairs (predicted terms, probability)
             for term, prob in pred[protein]:
+                if term not in go.ont.keys(): # discard terms not present in go
+                    continue
                 term = go.term2index[namespace][term]
                 mat[prot_id, term] = prob
 
