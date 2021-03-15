@@ -16,7 +16,8 @@ from .metrics import precision_recall_curve
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 # obo file used for calculations
 OBO_FILE = '{}/go.obo'.format(CURRENT_DIR)
-TRUE_FIN = '%s/true_y.tsv.gz' % (CURRENT_DIR)
+TRUE_FIN = '%s/true_y.tsv.gz' % (CURRENT_DIR) # derived from bpo_HUMAN_type1.txt
+TRUE_FIN2 = '%s/true_y_2.tsv.gz' % (CURRENT_DIR) # derived from bpo_HUMAN_type1.txt and bpo_HUMAN_type2.txt
 
 global __GO__
 __GO__ = [None]
@@ -40,7 +41,7 @@ def get_go():
         __GO__[0] = onto.Ontology(OBO_FILE, with_rels=True, include_alt_ids=False)
     return __GO__[0]
 
-def run(pred, mode, namespace):
+def run(pred, mode, namespace, ftype=1):
     """This method calculates performance metrics by comparing predictions with
 groundtruths.
 
@@ -55,6 +56,10 @@ groundtruths.
     - namespace: a string indicating "biological_process",
       "cellular_component", or "molecular_function".
 
+    - ftype: an integer indicating which type of benchmarks to use. At the
+      moment, this variable takes two values: 1 (bpo_HUMAN_type1.txt) and
+      2 (bpo_HUMAN_type1.txt + bpo_HUMAN_type2.txt).
+
     Output:
     ======
     - results: a matrix (n_thresholds, 4): columns are: thr, f1, precision,
@@ -66,13 +71,19 @@ groundtruths.
     # convert UniProt accessions into CAFA ids
     pred = mapper.map(pred)
 
+    # define benchmark file
+    if ftype == 1:
+        true_fin = TRUE_FIN # type1
+    else:
+        true_fin = TRUE_FIN2 # type1 + type2
+
     # obtained protein identifieres that appear in the benchmarks
-    common_prots = inou.get_common_prots(TRUE_FIN, pred, go, namespace)
+    common_prots = inou.get_common_prots(true_fin, pred, go, namespace)
 
     # read data from input files
     # true \in (n_proteins, n_onto_specific_terms)
     n_benchmarks, proteins, y_true = inou.read_groundtruth(
-        TRUE_FIN, go, namespace, common_prots)
+        true_fin, go, namespace, common_prots)
 
     n_predicted_proteins_in_benchmark, y_pred = utils.predictions_into_a_matrix(pred, proteins, namespace)
 
@@ -102,7 +113,7 @@ groundtruths.
 
     return results
 
-def f1max_score(pred, mode, namespace):
+def f1max_score(pred, mode, namespace, ftype=1):
     """ Return maximum F1 score"""
-    results = run(pred, mode, namespace)
+    results = run(pred, mode, namespace, ftype)
     return max(results[:,1])

@@ -1,4 +1,5 @@
 import gzip
+import warnings
 
 import numpy as np
 
@@ -14,6 +15,12 @@ def read_groundtruth(fin, go, namespace, prot_ids):
     with gzip.open(fin, 'rt', encoding='utf-8') as f:
         for a in f:
             prot_id, term = a.strip().split('\t')
+
+            # skip terms that are not present in the gene ontology
+            if term not in go.ont.keys():
+                warnings.warn("Benchmark term {} is missing in the go.".format(term))
+                continue
+
             term_namespace = go.ont[term]['namespace']
 
             # if prot_id not in prot_ids:
