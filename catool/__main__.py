@@ -17,5 +17,5 @@ if __name__ == '__main__':
     pred = inou.cast_predictions_into_dict(pred_fin, namespace)
 
     #print(main.f1max_score(pred, mode, namespace))
-    results = main.run(pred, mode, namespace, ftype)
+    results = main.all_scores(pred, mode, namespace, ftype)
     utils.results2string(results, mode, namespace)
