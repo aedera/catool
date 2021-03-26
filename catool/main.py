@@ -41,32 +41,31 @@ def get_go():
         __GO__[0] = onto.Ontology(OBO_FILE, with_rels=True, include_alt_ids=False)
     return __GO__[0]
 
-def run(pred, mode, namespace, ftype=1):
-    """This method calculates performance metrics by comparing predictions with
-groundtruths.
+def all_scores(pred, mode, namespace, ftype=1):
+    """This method calculates performance metrics by comparing predictions
+    with groundtruths.
 
-    Input:
-    =====
-    - pred: a dict whose keys are protein identifier and values are tuple of
-      two elements. The first element is a GO term and the second element is a
-      predicted value \in [0,1]
+    Args:
 
-    - mode: a string indicating "full" or "partial" mode.
+    pred : a dict whose keys are protein identifier and values are tuple of
+    two elements.  The first element is a GO term and the second element is a
+    predicted value \in [0,1]
 
-    - namespace: a string indicating "biological_process",
-      "cellular_component", or "molecular_function".
+    mode : a string indicating "full" or "partial" mode.
 
-    - ftype: an integer indicating which type of benchmarks to use. At the
-      moment, this variable takes two values: 1 (bpo_HUMAN_type1.txt) and
-      2 (bpo_HUMAN_type1.txt + bpo_HUMAN_type2.txt).
+    namespace : a string indicating sub-ontology: "biological_process",
+    "cellular_component", or "molecular_function".
 
-    Output:
-    ======
-    - results: a matrix (n_thresholds, 4): columns are: thr, f1, precision,
-      recall.
+    ftype : an integer indicating which type of benchmarks to use.  At the
+    moment, this variable takes two values: 1 (bpo_HUMAN_type1.txt) and 2
+    (bpo_HUMAN_type1.txt + bpo_HUMAN_type2.txt).
 
+    Returns:
+
+    results : a matrix with shape (n_thresholds, 4).  The four columns
+    corresponds to: threshold, f1, precision, recall
     """
-    go = get_go()
+    go = get_go() # get ontology
 
     # convert UniProt accessions into CAFA ids
     pred = mapper.map(pred)
@@ -115,5 +114,5 @@ groundtruths.
 
 def f1max_score(pred, mode, namespace, ftype=1):
     """ Return maximum F1 score"""
-    results = run(pred, mode, namespace, ftype)
+    results = all_scores(pred, mode, namespace, ftype)
     return max(results[:,1])
