@@ -45,10 +45,8 @@ def precision_and_recall_at_thr(true, pred, n_predicted_proteins, thr):
         ######
         # break
     ############
-    #print(n_retrieved)
-    #print(n_predicted_proteins)
 
-    return pr / n_retrieved, re / n_predicted_proteins
+    return pr / (n_retrieved + EPSILON), re / (n_predicted_proteins + EPSILON)
 
 @nb.njit(parallel=True)
 def precision_recall_curve(true, pred, n_predicted_proteins, out):

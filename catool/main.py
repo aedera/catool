@@ -16,8 +16,10 @@ from .metrics import precision_recall_curve
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 # obo file used for calculations
 OBO_FILE = '{}/go.obo'.format(CURRENT_DIR)
-TRUE_FIN = '%s/true_y.tsv.gz' % (CURRENT_DIR) # derived from bpo_HUMAN_type1.txt
-TRUE_FIN2 = '%s/true_y_2.tsv.gz' % (CURRENT_DIR) # derived from bpo_HUMAN_type1.txt and bpo_HUMAN_type2.txt
+
+TRUE_FIN1 = '%s/true_y_t1.tsv.gz' % (CURRENT_DIR) # bpo_HUMAN_type1.txt
+TRUE_FIN2 = '%s/true_y_t2.tsv.gz' % (CURRENT_DIR) # bpo_HUMAN_type2.txt
+TRUE_FIN3 = '%s/true_y_t3.tsv.gz' % (CURRENT_DIR) # bpo_HUMAN_type1.txt and bpo_HUMAN_type2.txt
 
 global __GO__
 __GO__ = [None]
@@ -72,9 +74,13 @@ def all_scores(pred, mode, namespace, ftype=1):
 
     # define benchmark file
     if ftype == 1:
-        true_fin = TRUE_FIN # type1
+        true_fin = TRUE_FIN1 # type1
+    elif ftype == 2:
+        true_fin = TRUE_FIN2 # type2
+    elif ftype == 3:
+        true_fin = TRUE_FIN3 # type1 + type2
     else:
-        true_fin = TRUE_FIN2 # type1 + type2
+        sys.exit("File type unknown.")
 
     # obtained protein identifieres that appear in the benchmarks
     common_prots = inou.get_common_prots(true_fin, pred, go, namespace)
@@ -114,5 +120,6 @@ def all_scores(pred, mode, namespace, ftype=1):
 
 def f1max_score(pred, mode, namespace, ftype=1):
     """ Return maximum F1 score"""
-    results = all_scores(pred, mode, namespace, ftype)
-    return max(results[:,1])
+
+    scores = all_scores(pred, mode, namespace, ftype)
+    return max(scores[:,1])
