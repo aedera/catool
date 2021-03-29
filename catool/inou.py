@@ -108,6 +108,7 @@ def cast_predictions_into_dict(fin, namespace):
             try:
                 term_namespace = go.ont[term]['namespace']
             except KeyError:
+                warnings.warn("Predicted term " + term + " is missing in the GO.")
                 term_namespace = None
 
             if term_namespace != namespace:

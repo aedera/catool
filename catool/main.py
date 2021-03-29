@@ -82,7 +82,7 @@ def all_scores(pred, mode, namespace, ftype=1):
     else:
         sys.exit("File type unknown.")
 
-    # obtained protein identifieres that appear in the benchmarks
+    # obtained protein identifiers that appear in the benchmarks
     common_prots = inou.get_common_prots(true_fin, pred, go, namespace)
 
     # read data from input files
