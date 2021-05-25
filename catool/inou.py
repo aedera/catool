@@ -123,7 +123,7 @@ def cast_predictions_into_dict(fin, namespace):
 
 def _get_prot_ids(fin, go, namespace):
     """
-    Obtain the prot_id from
+    Obtain the prot_id from internal file containing benchmark proteins.
     """
     prot_ids = set({})
     with gzip.open(fin, 'rt', encoding='utf-8') as f:
@@ -132,7 +132,7 @@ def _get_prot_ids(fin, go, namespace):
             prot_id = raw[0]
             term = raw[1]
 
-            # exclude terms that are not found in the GO
+            # exclude entries with GO terms not found in the GO
             try :
                 term_namespace = go.ont[term]['namespace']
             except KeyError:
