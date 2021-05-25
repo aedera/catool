@@ -47,7 +47,7 @@ def all_scores(pred,
                mode,
                namespace,
                ftype=1,
-               warning_CAFA3_wrong_terms=False):
+               warning_CAFA3_wrong_terms=True):
     """This method calculates performance metrics by comparing predictions
     with groundtruths.
 
@@ -122,7 +122,7 @@ def all_scores(pred,
 
     return results
 
-def f1max_score(pred, mode, namespace, ftype=1, warning_CAFA3_wrong_terms=False):
+def f1max_score(pred, mode, namespace, ftype=1, warning_CAFA3_wrong_terms=True):
     """ Return maximum F1 score"""
 
     scores = all_scores(pred, mode, namespace, ftype, warning_CAFA3_wrong_terms)
