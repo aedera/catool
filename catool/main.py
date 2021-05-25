@@ -43,7 +43,11 @@ def get_go():
         __GO__[0] = onto.Ontology(OBO_FILE, with_rels=True, include_alt_ids=False)
     return __GO__[0]
 
-def all_scores(pred, mode, namespace, ftype=1):
+def all_scores(pred,
+               mode,
+               namespace,
+               ftype=1,
+               warning_CAFA3_wrong_terms=False):
     """This method calculates performance metrics by comparing predictions
     with groundtruths.
 
@@ -88,7 +92,7 @@ def all_scores(pred, mode, namespace, ftype=1):
     # read data from input files
     # true \in (n_proteins, n_onto_specific_terms)
     n_benchmarks, proteins, y_true = inou.read_groundtruth(
-        true_fin, go, namespace, common_prots)
+        true_fin, go, namespace, common_prots, warning_CAFA3_wrong_terms)
 
     n_predicted_proteins_in_benchmark, y_pred = utils.predictions_into_a_matrix(pred, proteins, namespace)
 
@@ -118,8 +122,8 @@ def all_scores(pred, mode, namespace, ftype=1):
 
     return results
 
-def f1max_score(pred, mode, namespace, ftype=1):
+def f1max_score(pred, mode, namespace, ftype=1, warning_CAFA3_wrong_terms=False):
     """ Return maximum F1 score"""
 
-    scores = all_scores(pred, mode, namespace, ftype)
+    scores = all_scores(pred, mode, namespace, ftype, warning_CAFA3_wrong_terms)
     return max(scores[:,1])
