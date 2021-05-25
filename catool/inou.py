@@ -5,7 +5,29 @@ import numpy as np
 
 from . import main
 
-def read_groundtruth(fin, go, namespace, prot_ids):
+# wrong terms found in the ground truth of the CAFA Assessment Tool
+WRONG_TERMS = set({
+    'GO:0061844',
+    'GO:0097752',
+    'GO:1905246',
+    'GO:1905929',
+    'GO:1905719',
+    'GO:1905747',
+    'GO:1905748',
+    'GO:0097712',
+    'GO:1905671',
+    'GO:0120049',
+    'GO:1905477',
+    'GO:1905793',
+    'GO:1905799',
+    'GO:0110026'
+})
+
+def read_groundtruth(fin,
+                     go,
+                     namespace,
+                     prot_ids,
+                     warning_CAFA3_wrong_terms=False):
     """
     Ground truth is assumed to be a two-columns file.
 
@@ -18,7 +40,15 @@ def read_groundtruth(fin, go, namespace, prot_ids):
 
             # skip terms that are not present in the gene ontology
             if term not in go.ont.keys():
-                warnings.warn("Benchmark term {} is missing in the go.".format(term))
+                # don't show warning messages for wrong terms
+                if term in WRONG_TERMS:
+                    if warning_CAFA3_wrong_terms:
+                        warnings.warn(
+                            "Benchmark term {} is missing in the go.".format(term))
+                else:
+                    warnings.warn(
+                        "Benchmark term {} is missing in the go.".format(term))
+
                 continue
 
             term_namespace = go.ont[term]['namespace']
