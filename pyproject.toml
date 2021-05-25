@@ -5,7 +5,7 @@ description = ""
 authors = ["Alejandro A. Edera <aedera@sinc.unl.edu.ar>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = ">=3.7,<3.10"
 numba = "^0.53"
 
 [tool.poetry.dev-dependencies]
