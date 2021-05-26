@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "catool"
-version = "0.1.0"
+version = "0.1.99"
 description = ""
 authors = ["Alejandro A. Edera <aedera@sinc.unl.edu.ar>"]
 
